@@ -24,7 +24,7 @@ public class App
         
         await _page.SetUserAgentAsync("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36");
 
-        await _page.GoToAsync($"{BaseAddress}/.auth/login");
+        await _page.GoToAsync($"{BaseAddress}/oauth2/sign_in");
     }
 
     public async Task GoTo(string uri)

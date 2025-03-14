@@ -70,7 +70,7 @@ public class SingleInstanceTokenRenewalTests : IAsyncLifetime
         return new AuthSession(contextAccessor,
             Substitute.For<IRedirectUriFactory>(),
             Substitute.For<IIdentityProvider>(),
-            new EndpointName(".auth"));
+            new EndpointName("oauth2"));
     }
     
     public Task DisposeAsync()

@@ -104,17 +104,17 @@ To run it, type `dotnet run` or just hit the 'play'-button in Visual Studio.
 
 The proxy relays all requests as configured in the `ReverseProxy` section in the `appsettings.json` file, except for four endpoints:
 
-### [GET] /.auth/login
-To log a user in and to start a http session, navigate to `/.auth/login`. The software will redirect to the login page of the Identity Provider to log the user in. The resulting tokens will be stored in the user session and are not available in the browser.
+### [GET] /oauth2/sign_in
+To log a user in and to start a http session, navigate to `/oauth2/sign_in`. The software will redirect to the login page of the Identity Provider to log the user in. The resulting tokens will be stored in the user session and are not available in the browser.
 
-### [GET] /.auth/login/callback
+### [GET] /oauth2/callback
 This endpoint is used by the IdentityProvider.
 
-### [GET] /.auth/me
-To see the logged in user, navigate to the `/.auth/me` endpoint. This endpoint shows the claims that are in the `id_token`.
+### [GET] /oauth2/userinfo
+To see the logged in user, navigate to the `/oauth2/userinfo` endpoint. This endpoint shows the claims that are in the `id_token`.
 
-### [GET] /.auth/end-session
-To revoke the tokens that have been obtained when the user logged in, execute a get request on the `/.auth/end-session` endpoint. This will revoke the tokens that have been stored in the user session and will not log the user out from the Identity Provider session. This must be implemented at client side.
+### [GET] /oauth2/sign_out
+To revoke the tokens that have been obtained when the user logged in, execute a get request on the `/oauth2/sign_out` endpoint. This will revoke the tokens that have been stored in the user session and will not log the user out from the Identity Provider session. This must be implemented at client side.
 
 ## Issues
 

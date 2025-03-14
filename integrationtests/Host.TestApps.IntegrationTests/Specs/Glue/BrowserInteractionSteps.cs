@@ -46,19 +46,19 @@ public class BrowserInteractionSteps(ScenarioContext scenarioContext)
         _response = await _page.GoToAsync($"{root}{path}");
     }
 
-    [When(@"the user has authenticated \(navigated to /\.auth/login\)")]
-    [Given(@"the user has authenticated \(navigated to /\.auth/login\)")]
+    [When(@"the user has authenticated \(navigated to /oauth2/sign_in\)")]
+    [Given(@"the user has authenticated \(navigated to /oauth2/sign_in\)")]
     public async Task NavigateToLoginEndpoint()
     {
         var root = scenarioContext["proxyurl"];
-        _response = await _page.GoToAsync($"{root}/.auth/login");
+        _response = await _page.GoToAsync($"{root}/oauth2/sign_in");
     }
     
-    [Given(@"the user has signed out \(navigated to /\.auth/end-session\)")]
+    [Given(@"the user has signed out \(navigated to /oauth2/sign_out\)")]
     public async Task NavigateToEndSessionEndpoint()
     {
         var root = scenarioContext["proxyurl"];
-        _response = await _page.GoToAsync($"{root}/.auth/end-session");
+        _response = await _page.GoToAsync($"{root}/oauth2/sign_out");
     }
 
     [When(@"a resource is requested that requires authorization")]
@@ -105,7 +105,7 @@ public class BrowserInteractionSteps(ScenarioContext scenarioContext)
     {
         var uri = new Uri(_page.Url);
         var root = uri.GetLeftPart(UriPartial.Authority);
-        _response = await _page.GoToAsync($"{root}/.auth/me");
+        _response = await _page.GoToAsync($"{root}/oauth2/userinfo");
         
         var content = await _page.GetContentAsync();
         content.Should().Contain("johndoe");
@@ -116,7 +116,7 @@ public class BrowserInteractionSteps(ScenarioContext scenarioContext)
     {
         var uri = new Uri(_page.Url);
         var root = uri.GetLeftPart(UriPartial.Authority);
-        _response = await _page.GoToAsync($"{root}/.auth/me");
+        _response = await _page.GoToAsync($"{root}/oauth2/userinfo");
         
         var content = await _page.GetContentAsync();
         content.Should().NotContain("johndoe");

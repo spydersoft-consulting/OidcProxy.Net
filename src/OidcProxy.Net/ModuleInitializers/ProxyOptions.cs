@@ -66,7 +66,7 @@ public class ProxyOptions
 
     #region Public properties
 
-    public string EndpointName { get; set; } = ".auth";
+    public string EndpointName { get; set; } = "oauth2";
 
     internal Uri? CustomHostName = null;
 
@@ -216,7 +216,7 @@ public class ProxyOptions
     }
 
     [Obsolete("Will retire soon. Use `IServiceCollection.UseOidcProxy<TIdentityProvider, TAppSettings>(appSettings)` instead.")]
-    public void RegisterIdentityProvider<TIdentityProvider, TIdentityProviderConfig>(TIdentityProviderConfig config, string endpointName = ".auth")
+    public void RegisterIdentityProvider<TIdentityProvider, TIdentityProviderConfig>(TIdentityProviderConfig config, string endpointName = "oauth2")
         where TIdentityProvider : class, IIdentityProvider
         where TIdentityProviderConfig : class
     {

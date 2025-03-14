@@ -323,6 +323,6 @@ public class SessionWrapperTests
         return new AuthSession(contextAccessor,
             Substitute.For<IRedirectUriFactory>(),
             Substitute.For<IIdentityProvider>(),
-            new EndpointName(".auth"));
+            new EndpointName("oauth2"));
     }
 }
