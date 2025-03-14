@@ -47,7 +47,7 @@ public class Worker : IHostedService
                 ClientSecret = clientSecret,
                 RedirectUris =
                 {
-                    new Uri("https://localhost:8444/.auth/login/callback")
+                    new Uri("https://localhost:8444/oauth2/callback")
                 },
                 Permissions =
                 {

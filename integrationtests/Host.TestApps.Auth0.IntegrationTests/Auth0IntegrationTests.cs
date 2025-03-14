@@ -49,11 +49,11 @@ public class Auth0IntegrationTests : IClassFixture<HostApplication>
             app.CurrentPage.Text.Should().Contain(sub);
 
             // Log out
-            await app.GoTo("/.auth/end-session");
+            await app.GoTo("/oauth2/sign_out");
             await Task.Delay(1000);
             
             // Assert user details flushed
-            await app.GoTo("/.auth/me");
+            await app.GoTo("/oauth2/userinfo");
             await Task.Delay(1000);
             
             app.CurrentPage.Text.Should().NotContain(username);

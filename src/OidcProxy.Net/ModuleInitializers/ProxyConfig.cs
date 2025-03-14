@@ -39,7 +39,7 @@ public class ProxyConfig : IAppSettingsSection
         options.EnableUserPreferredLandingPages = EnableUserPreferredLandingPages;
         options.AlwaysRedirectToHttps = !AlwaysRedirectToHttps.HasValue || AlwaysRedirectToHttps.Value;
         options.AllowAnonymousAccess = !AllowAnonymousAccess.HasValue || AllowAnonymousAccess.Value;
-        options.EndpointName = EndpointName ?? ".auth";
+        options.EndpointName = EndpointName ?? "oauth2";
         options.SetAllowedLandingPages(AllowedLandingPages);
 
         if (SessionIdleTimeout.HasValue)

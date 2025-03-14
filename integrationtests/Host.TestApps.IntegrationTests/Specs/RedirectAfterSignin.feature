@@ -18,7 +18,7 @@ Scenario Outline: Defining whitelisted redirect-urls in sign-in url
 Given the OidcProxy is configured to allow anonymous access
   And the user interacts with the site that implements the OidcProxy with a browser
   And the OidcProxy has included <url> in the whitelisted redirect urls
- When the user navigates to /.auth/login?landingpage=<url>
+ When the user navigates to /oauth2/sign_in?landingpage=<url>
  Then the user has been authenticated
   And the path in the browser equals <url>
   And access_tokens are forwarded to downstream APIs

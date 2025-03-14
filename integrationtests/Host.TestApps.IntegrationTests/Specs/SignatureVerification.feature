@@ -3,7 +3,7 @@ Feature: Signature validation
 Scenario: Valid Token RS256
 Given the user interacts with the site that implements the OidcProxy with a browser
   And the Oidc Server signs the JWT with RS256
-  And the user has authenticated (navigated to /.auth/login)
+  And the user has authenticated (navigated to /oauth2/sign_in)
   When the user navigates to /.auth/me
   Then the payload of the the ID_TOKEN is visible
 
@@ -11,15 +11,15 @@ Scenario: Valid Token HS256
 Given the user interacts with the site that implements the OidcProxy with a browser
   And the Oidc Server signs the JWT with HS256
   And the OidcProxy is configured to use a symmetric key to validate the token signature
-  And the user has authenticated (navigated to /.auth/login)
-  When the user navigates to /.auth/me
+  And the user has authenticated (navigated to /oauth2/sign_in)
+  When the user navigates to /oauth2/userinfo
   Then the payload of the the ID_TOKEN is visible
   
 Scenario Outline: Tampered access_token RS256
 Given the user interacts with the site that implements the OidcProxy with a browser
   And the Oidc Server signs the JWT with RS256
   And the Proxy receives a token with a <abuse-case>
-  When the user has authenticated (navigated to /.auth/login)
+  When the user has authenticated (navigated to /oauth2/sign_in)
   Then the endpoint responds with a 401 unauthorized
  Examples:
  | abuse-case                                                        |
@@ -55,7 +55,7 @@ Given the user interacts with the site that implements the OidcProxy with a brow
   And the Oidc Server signs the JWT with HS256
   And the OidcProxy is configured to use a symmetric key to validate the token signature
   And the Proxy receives a token that has been tampered with
-  When the user has authenticated (navigated to /.auth/login)
+  When the user has authenticated (navigated to /oauth2/sign_in)
   Then the endpoint responds with a 401 unauthorized
   
   
