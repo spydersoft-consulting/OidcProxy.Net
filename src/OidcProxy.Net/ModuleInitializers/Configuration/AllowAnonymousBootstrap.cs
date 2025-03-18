@@ -8,7 +8,7 @@ internal class AllowAnonymousBootstrap : IBootstrap
 {
     public void Configure(ProxyOptions options, IServiceCollection services)
     {
-        services.AddTransient<AnonymousAccessMiddleware>();
+        services.AddSingleton<ISkipAuthRoutes>(c => new SkipAuthRoutes(options.SkipAuthRoutes)).AddTransient<AnonymousAccessMiddleware>();
     }
 
     public void Configure(ProxyOptions options, WebApplication app)

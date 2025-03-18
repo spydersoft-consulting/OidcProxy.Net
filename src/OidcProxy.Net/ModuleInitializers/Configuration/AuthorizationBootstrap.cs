@@ -1,3 +1,4 @@
+using System.Threading.Tasks.Dataflow;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using OidcProxy.Net.Cryptography;
@@ -57,15 +58,18 @@ internal class AuthorizationBootstrap : IBootstrap
             .AddAuthorization()
             .AddAuthentication(OidcProxyAuthenticationHandler.SchemaName)
             .AddScheme<OidcProxyAuthenticationSchemeOptions, OidcProxyAuthenticationHandler>(OidcProxyAuthenticationHandler.SchemaName, null);
-        
+
+        services.AddRequestTimeouts();
         _applyJwtParser(services); 
         _applyJwtValidator(services);
         _applyHs256SignatureValidator(services);
     }
 
     public void Configure(ProxyOptions options, WebApplication app)
-    {        
+    {
         app.UseAuthentication();
+        app.UseRouting();
+        app.UseRequestTimeouts();
         app.UseAuthorization();
     }
 }

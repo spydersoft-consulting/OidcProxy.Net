@@ -4,7 +4,7 @@ public class Scopes : List<string>
 {
     public Scopes(IEnumerable<string> scopes)
     {
-        AddRange(scopes.Select(x => x.ToLowerInvariant()));
+        AddRange(scopes);
 
         const string openId = "openid";
         if (!Contains(openId))

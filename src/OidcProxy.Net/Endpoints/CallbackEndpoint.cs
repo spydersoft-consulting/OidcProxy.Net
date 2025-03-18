@@ -35,7 +35,7 @@ internal static class CallbackEndpoint
                 return await authenticationCallbackHandler.OnAuthenticationFailed(context, redirectUri, userPreferredLandingPage);
             }
 
-            var endpointName = context.Request.Path.RemoveQueryString().TrimEnd("/login/callback");
+            var endpointName = context.Request.Path.RemoveQueryString().TrimEnd("/callback");
             var redirectUrl = redirectUriFactory.DetermineRedirectUri(context, endpointName);
 
             var codeVerifier = authSession.GetCodeVerifier();

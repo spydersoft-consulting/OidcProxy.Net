@@ -40,6 +40,11 @@ public class OpenIdConnectIdentityProvider(
         });
 
         var request = await client.PrepareLoginAsync(GetFrontChannelParameters());
+        if (request.IsError)
+        {
+            throw new InvalidOperationException(
+                $"Error from identity provider {configuration.Authority}: {request.Error}. {request.ErrorDescription}.");
+        }
         
         return new AuthorizeRequest(new Uri(request.StartUrl), request.CodeVerifier);
     }
