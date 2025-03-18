@@ -1,6 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Threading.Tasks.Dataflow;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using OidcProxy.Net.Cryptography;
 using OidcProxy.Net.Jwt;
 using OidcProxy.Net.Jwt.SignatureValidation;
@@ -56,20 +60,40 @@ internal class AuthorizationBootstrap : IBootstrap
     {
         services
             .AddAuthorization()
-            .AddAuthentication(OidcProxyAuthenticationHandler.SchemaName)
-            .AddScheme<OidcProxyAuthenticationSchemeOptions, OidcProxyAuthenticationHandler>(OidcProxyAuthenticationHandler.SchemaName, null);
+            .AddAuthentication("Cookie_OR_Bearer")
+            .AddScheme<OidcProxyAuthenticationSchemeOptions, OidcProxyAuthenticationHandler>(
+                OidcProxyAuthenticationHandler.SchemaName, null)
+            .AddScheme<OidcProxyBearerAuthenticationSchemeOptions,
+                OidcProxyBearerAuthenticationHandler>(OidcProxyBearerAuthenticationHandler.SchemaName, null)
+            .AddPolicyScheme("Cookie_OR_Bearer", "Cookie_OR_Bearer", 
+        opt =>
+            {
+                opt.ForwardDefaultSelector = context =>
+                {
+                    string authorization = context.Request.Headers[HeaderNames.Authorization];
+                    if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+                    {
+                        return OidcProxyBearerAuthenticationHandler.SchemaName;
+                    }
+
+                    return OidcProxyAuthenticationHandler.SchemaName;
+                };
+            });
 
         services.AddRequestTimeouts();
         _applyJwtParser(services); 
         _applyJwtValidator(services);
         _applyHs256SignatureValidator(services);
+        services.AddScoped<ISkipJwtBearerTokens>(c =>
+            new SkipJwtBearerTokens(c.GetRequiredService<IJwtSignatureValidator>(),
+                c.GetRequiredService<ITokenParser>(), options.SkipJwtBearerTokens, null));
     }
 
     public void Configure(ProxyOptions options, WebApplication app)
     {
-        app.UseAuthentication();
         app.UseRouting();
         app.UseRequestTimeouts();
+        app.UseAuthentication();
         app.UseAuthorization();
     }
 }
