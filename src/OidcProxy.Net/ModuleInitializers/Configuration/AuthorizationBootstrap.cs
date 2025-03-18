@@ -70,7 +70,7 @@ internal class AuthorizationBootstrap : IBootstrap
             {
                 opt.ForwardDefaultSelector = context =>
                 {
-                    string authorization = context.Request.Headers[HeaderNames.Authorization];
+                    string? authorization = context.Request.Headers.Authorization.FirstOrDefault();
                     if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
                     {
                         return OidcProxyBearerAuthenticationHandler.SchemaName;
@@ -84,9 +84,6 @@ internal class AuthorizationBootstrap : IBootstrap
         _applyJwtParser(services); 
         _applyJwtValidator(services);
         _applyHs256SignatureValidator(services);
-        services.AddScoped<ISkipJwtBearerTokens>(c =>
-            new SkipJwtBearerTokens(c.GetRequiredService<IJwtSignatureValidator>(),
-                c.GetRequiredService<ITokenParser>(), options.SkipJwtBearerTokens, null));
     }
 
     public void Configure(ProxyOptions options, WebApplication app)
