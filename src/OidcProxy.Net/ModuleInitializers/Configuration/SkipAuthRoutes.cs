@@ -2,7 +2,7 @@
 
 namespace OidcProxy.Net.ModuleInitializers.Configuration;
 
-public class SkipAuthRoutes : ISkipAuthRoutes
+public class SkipAuthRoutes : ISkipAuthRoutes, IApiRoutes
 {
     private readonly List<(string? Method, Regex PathRegex, bool Negate)> rules = new();
 
@@ -46,5 +46,10 @@ public class SkipAuthRoutes : ISkipAuthRoutes
             }
         }
         return false;
+    }
+
+    public bool Matches(string method, string path)
+    {
+        return ShouldBypass(method, path);
     }
 }

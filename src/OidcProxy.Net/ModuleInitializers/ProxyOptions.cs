@@ -50,8 +50,8 @@ public class ProxyOptions
         var bootstraps = new List<IBootstrap?>
         {
             _sessionBootstrap,
+            _authorizationBootstrap,
             _oidcProxyBootstrap,
-            _authorizationBootstrap
         };
 
         if (Mode != Mode.AuthenticateOnly)
@@ -126,6 +126,8 @@ public class ProxyOptions
     public bool? CookieSecure { get; set; }
     public string? CookieDomain { get; set; }
     public SameSiteMode? CookieSameSite { get; set; }
+    public IEnumerable<string> ApiRoutes { get; set; } = new List<string>();
+    public bool SkipJwtBearerTokens { get; set; }
 
     #endregion
 

@@ -27,6 +27,8 @@ public class ProxyConfig : IAppSettingsSection
 
     public IList<string> SkipAuthRoutes { get; set; } = new List<string>();
 
+    public IList<string> ApiRoutes { get; set; } = new List<string>();
+
     public virtual bool Validate(out IEnumerable<string> errors)
     {
         errors = Array.Empty<string>();
@@ -51,6 +53,8 @@ public class ProxyConfig : IAppSettingsSection
         options.SkipAuthRoutes = SkipAuthRoutes;
         options.CookieSecure = CookieSecure;
         options.CookieDomain = CookieDomain;
+        options.ApiRoutes = ApiRoutes;
+        options.SkipJwtBearerTokens = SkipJwtBearerTokens;
 
         if (SessionIdleTimeout.HasValue)
         {
@@ -65,7 +69,9 @@ public class ProxyConfig : IAppSettingsSection
             options.ConfigureYarp(routes, clusters);
         }
     }
-    
+
+    public bool SkipJwtBearerTokens { get; set; } = false;
+
     private static void AssignIfNotNull<T>(T? value, Action<T> @do)
     {
         if (value != null)

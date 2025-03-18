@@ -9,7 +9,8 @@ internal class AnonymousAccessMiddleware(
     IAuthSession authSession,
     ILogger logger,
     IHttpContextAccessor httpContextAccessor,
-    ISkipAuthRoutes skipAuthRoutes)
+    ISkipAuthRoutes skipAuthRoutes,
+    IApiRoutes apiRoutes)
     : IMiddleware
 {
 
@@ -22,10 +23,23 @@ internal class AnonymousAccessMiddleware(
             return;
         }
 
+        if (context.User.Identity?.IsAuthenticated ?? false)
+        {
+            await next(context);
+            return;
+        }
+
         var session = httpContextAccessor.HttpContext?.Session;
         if (session?.GetAccessToken() != null || skipAuthRoutes.ShouldBypass(context.Request.Method, context.Request.Path))
         {
             await next(context);
+            return;
+        }
+
+        if (apiRoutes.Matches(context.Request.Method, context.Request.Path))
+        {
+            await logger.InformAsync($"Api route {context.Request.Path} returning 401");
+            context.Response.StatusCode = 401;
             return;
         }
         
