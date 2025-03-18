@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using OidcProxy.Net.Cryptography;
 using OidcProxy.Net.IdentityProviders;
@@ -46,16 +47,18 @@ public class ProxyOptions
         
         _yarpBootstrap.AddYarpMiddleware(_customYarpMiddleware);
 
-        var bootstraps = new List<IBootstrap?>();
+        var bootstraps = new List<IBootstrap?>
+        {
+            _sessionBootstrap,
+            _oidcProxyBootstrap,
+            _authorizationBootstrap
+        };
+
         if (Mode != Mode.AuthenticateOnly)
         {
             bootstraps.Add(_yarpBootstrap);
         }
 
-        bootstraps.Add(_sessionBootstrap);
-        bootstraps.Add(_oidcProxyBootstrap);
-        bootstraps.Add(_authorizationBootstrap);
-        
         return bootstraps
             .Where(x => x != null)
             .Cast<IBootstrap>()
@@ -118,6 +121,11 @@ public class ProxyOptions
     /// /authorize endpoint of the identity provider.
     /// </summary>
     public bool AllowAnonymousAccess { get; set; } = true;
+
+    public IEnumerable<string> SkipAuthRoutes { get; set; } = new List<string>();
+    public bool? CookieSecure { get; set; }
+    public string? CookieDomain { get; set; }
+    public SameSiteMode? CookieSameSite { get; set; }
 
     #endregion
 

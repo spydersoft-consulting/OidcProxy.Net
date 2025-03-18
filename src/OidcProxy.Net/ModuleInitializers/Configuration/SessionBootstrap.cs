@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using OidcProxy.Net.Locking;
 using OidcProxy.Net.Locking.Distributed.Redis;
@@ -32,6 +33,17 @@ internal class SessionBootstrap : IBootstrap
                 o.Cookie.HttpOnly = true;
                 o.Cookie.IsEssential = true;
                 o.Cookie.Name = options.CookieName;
+                o.Cookie.Domain = options.CookieDomain;
+                if (options.CookieSecure.HasValue && options.CookieSecure.Value)
+                {
+                    o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                }
+
+                if (options.CookieSameSite.HasValue)
+                {
+                    o.Cookie.SameSite = options.CookieSameSite.Value;
+                }
+
             });
 
         if (_connectionMultiplexer == null)
@@ -59,7 +71,7 @@ internal class SessionBootstrap : IBootstrap
     public void Configure(ProxyOptions options, WebApplication app)
     {
         app.UseSession();
-        
+
         app.Use(async (context, next) =>
         {
             await context.Session.LoadAsync();

@@ -30,6 +30,11 @@ internal sealed class OidcProxyAuthenticationHandler(
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
 
+            if (!httpContextAccessor.HttpContext.Session.IsAvailable)
+            {
+                return Task.FromResult(AuthenticateResult.NoResult());
+            }
+
             var token = httpContextAccessor.HttpContext.Session.GetAccessToken();
             if (string.IsNullOrEmpty(token))
             {

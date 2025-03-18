@@ -13,18 +13,21 @@ internal static class WebApplicationExtensions
             return;
         }
 
-        app.MapReverseProxy(x => x.Use((context, next) =>
+        app.UseEndpoints(e =>
         {
-            var delegates = new List<Func<HttpContext, Task>> { _ => next() };
-
-            foreach (var type in types)
+            e.MapReverseProxy(x => x.Use((context, next) =>
             {
-                var instance = (IYarpMiddleware) x.ApplicationServices.GetRequiredService(type);
-                var previous = delegates.Last();
-                delegates.Add(ctx => instance.Apply(ctx, previous));
-            }
+                var delegates = new List<Func<HttpContext, Task>> { _ => next() };
 
-            return delegates.Last()(context);
-        }));
+                foreach (var type in types)
+                {
+                    var instance = (IYarpMiddleware)x.ApplicationServices.GetRequiredService(type);
+                    var previous = delegates.Last();
+                    delegates.Add(ctx => instance.Apply(ctx, previous));
+                }
+
+                return delegates.Last()(context);
+            }));
+        });
     }
 }

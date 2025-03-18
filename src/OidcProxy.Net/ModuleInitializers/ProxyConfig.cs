@@ -18,7 +18,14 @@ public class ProxyConfig : IAppSettingsSection
     public Uri? CustomHostName { get; set; }
     public string? CookieName { get; set; }
     public TimeSpan? SessionIdleTimeout { get; set; }
+
+    public bool? CookieSecure { get; set; }
+
+    public string? CookieDomain { get; set; }
+    
     public YarpConfig? ReverseProxy { get; set; }
+
+    public IList<string> SkipAuthRoutes { get; set; } = new List<string>();
 
     public virtual bool Validate(out IEnumerable<string> errors)
     {
@@ -41,6 +48,9 @@ public class ProxyConfig : IAppSettingsSection
         options.AllowAnonymousAccess = !AllowAnonymousAccess.HasValue || AllowAnonymousAccess.Value;
         options.EndpointName = EndpointName ?? "oauth2";
         options.SetAllowedLandingPages(AllowedLandingPages);
+        options.SkipAuthRoutes = SkipAuthRoutes;
+        options.CookieSecure = CookieSecure;
+        options.CookieDomain = CookieDomain;
 
         if (SessionIdleTimeout.HasValue)
         {

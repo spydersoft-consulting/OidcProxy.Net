@@ -19,8 +19,8 @@ internal class YarpBootstrap : IBootstrap
     public void Configure(ProxyOptions options, IServiceCollection services)
     {
         var proxyBuilder = services
-            .AddReverseProxy()
-            .AddTransforms<HttpHeaderTransformation>();
+            .AddReverseProxy();
+            //.AddTransforms<HttpHeaderTransformation>();
 
         foreach (var config in _configuration)
         {
