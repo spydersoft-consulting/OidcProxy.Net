@@ -36,7 +36,15 @@ public class OpenIdConnectIdentityProvider(
             ClientSecret = configuration.ClientSecret,
             RedirectUri = redirectUri,
             Scope = string.Join(" ", scopes),
-            DisablePushedAuthorization = configuration.DisablePushedAuthorization
+            DisablePushedAuthorization = configuration.DisablePushedAuthorization,
+            Policy = new Policy
+            {
+                Discovery = new DiscoveryPolicy
+                {
+                    ValidateIssuerName = !configuration.SkipIssuerNameValidation,
+                },
+                ValidateTokenIssuerName = !configuration.SkipIssuerNameValidation,
+            }
         });
 
         var request = await client.PrepareLoginAsync(GetFrontChannelParameters());
@@ -191,7 +199,11 @@ public class OpenIdConnectIdentityProvider(
     
     protected virtual async Task<DiscoveryDocument?> ObtainDiscoveryDocument(string endpointAddress)
     {
-        var discoveryDocument = await httpClient.GetDiscoveryDocumentAsync(endpointAddress);
+        var discoveryDocument = await httpClient.GetDiscoveryDocumentAsync(endpointAddress, new DiscoveryPolicy
+        {
+            ValidateIssuerName = !configuration.SkipIssuerNameValidation,
+        });
+
         if (discoveryDocument == null)
         {
             return null;
@@ -229,5 +241,25 @@ public class OpenIdConnectIdentityProvider(
 
         cache.Set(endpointAddress, discoveryDocument, TimeSpan.FromHours(1));
         return (DiscoveryDocument)discoveryDocument;
+    }
+}
+
+public static class HttpClientDiscoveryExtensions
+{
+    /// <summary>
+    /// Sends a discovery document request
+    /// </summary>
+    /// <param name="client">The client.</param>
+    /// <param name="address">The address.</param>
+    /// <param name="policy"></param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    public static async Task<DiscoveryDocumentResponse?> GetDiscoveryDocumentAsync(this HttpClient client,
+        string? address = null, DiscoveryPolicy? policy = null, CancellationToken cancellationToken = default)
+    {
+        return await client
+            .GetDiscoveryDocumentAsync(
+                new DiscoveryDocumentRequest { Address = address, Policy = policy ?? new DiscoveryPolicy() },
+                cancellationToken).ConfigureAwait(false);
     }
 }
