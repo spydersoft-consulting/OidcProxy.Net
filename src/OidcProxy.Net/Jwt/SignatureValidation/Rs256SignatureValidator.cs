@@ -13,8 +13,8 @@ internal class Rs256SignatureValidator : SignatureValidator
             .Where(x => x.Kid == header.Kid)
             .ToArray();
         
-        return (keys.Length == 1)
-            ? keys.Single()
+        return (keys.Length >= 1)
+            ? keys.First()
             : null;
     }
 

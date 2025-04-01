@@ -18,6 +18,8 @@ public class OpenIdConnectConfig
 
     public bool DisablePushedAuthorization { get; set; } = false;
 
+    public bool SkipIssuerNameValidation { get; set; } = false;
+
     public virtual bool Validate(out IEnumerable<string> errors)
     {
         var results = new List<string>();
