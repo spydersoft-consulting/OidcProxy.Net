@@ -64,7 +64,7 @@ internal class SessionBootstrap : IBootstrap
 
             services
                 .AddTransient<IConcurrentContext, RedisConcurrentContext>()
-                .AddTransient<IDistributedLockFactory>(_ => RedLockFactory.Create(new List<RedLockMultiplexer>() { _connectionMultiplexer }));
+                .AddSingleton<IDistributedLockFactory>(_ => RedLockFactory.Create(new List<RedLockMultiplexer>() { _connectionMultiplexer }));
         }
     }
 
