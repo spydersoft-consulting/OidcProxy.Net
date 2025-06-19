@@ -27,7 +27,7 @@ public class SkipAuthRoutes : ISkipAuthRoutes, IApiRoutes
             var method = match.Groups[1].Success ? match.Groups[1].Value : null;
             var negate = match.Groups[2].Success && match.Groups[2].Value == "!";
             var pathPattern = match.Groups[3].Value;
-            var pathRegex = new Regex(pathPattern, RegexOptions.Compiled);
+            var pathRegex = new Regex(pathPattern);
 
             rules.Add((method, pathRegex, negate));
         }
