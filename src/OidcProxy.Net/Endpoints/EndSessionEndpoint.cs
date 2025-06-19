@@ -17,9 +17,13 @@ internal static class EndSessionEndpoint
         [FromServices] IIdentityProvider identityProvider)
     {
 
+        var baseAddress = $"{redirectUriFactory.DetermineHostName(context)}";
+
         if (!authSession.HasAccessToken())
         {
-            return Results.BadRequest();
+            await logger.InformAsync($"Redirect to {baseAddress}");
+
+            return Results.Redirect(baseAddress);
         }
 
         await logger.InformAsync("Revoking access_token.");
@@ -60,8 +64,6 @@ internal static class EndSessionEndpoint
 
         context.Session.Clear();
         context.Response.Cookies.Delete(proxyOptions.CookieName);
-
-        var baseAddress = $"{redirectUriFactory.DetermineHostName(context)}";
 
         var endSessionEndpoint = await identityProvider.GetEndSessionEndpointAsync(idToken, baseAddress);
 

@@ -52,6 +52,6 @@ internal readonly partial struct LandingPage
 
     public bool Equals(string url) => this.ToString().Equals(url, StringComparison.InvariantCultureIgnoreCase);
 
-    [GeneratedRegex("^\\/[a-zA-Z0-9.]")]
+    [GeneratedRegex("^\\/[a-zA-Z0-9.?&=:%]")]
     private static partial Regex LandingPageRegex();
 }
