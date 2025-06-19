@@ -14,7 +14,7 @@ namespace OidcProxy.Net.OpenIdConnect;
 public class OpenIdConnectIdentityProvider(
     ILogger logger,
     IMemoryCache cache,
-    HttpClient httpClient,
+    IHttpClientFactory httpClientFactory,
     OpenIdConnectConfig configuration)
     : IIdentityProvider
 {
@@ -70,7 +70,8 @@ public class OpenIdConnectIdentityProvider(
                 "Unable to exchange code for access_token. The well-known/openid-configuration " +
                 "document does not contain a token endpoint.");
         }
-        
+
+        using var httpClient = httpClientFactory.CreateClient();
         var response = await httpClient.RequestTokenAsync(new AuthorizationCodeTokenRequest
         {
              Address = wellKnown.token_endpoint,
@@ -108,7 +109,8 @@ public class OpenIdConnectIdentityProvider(
         {
             return (JsonWebKeySet)keySet;
         }
-        
+
+        using var httpClient = httpClientFactory.CreateClient();
         var response = await httpClient.GetJsonWebKeySetAsync(jwksUri);
         if (response.IsError)
         {
@@ -126,6 +128,7 @@ public class OpenIdConnectIdentityProvider(
         var openIdConfiguration = await GetDiscoveryDocument();
         var scopes = new Scopes(configuration.Scopes);
 
+        using var httpClient = httpClientFactory.CreateClient();
         var response = await httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
         {
             Address = openIdConfiguration.token_endpoint,
@@ -153,6 +156,7 @@ public class OpenIdConnectIdentityProvider(
     {
         var openIdConfiguration = await GetDiscoveryDocument();
 
+        using var httpClient = httpClientFactory.CreateClient();
         var response = await httpClient.RevokeTokenAsync(new TokenRevocationRequest
         {
             Address = openIdConfiguration.revocation_endpoint,
@@ -199,6 +203,7 @@ public class OpenIdConnectIdentityProvider(
     
     protected virtual async Task<DiscoveryDocument?> ObtainDiscoveryDocument(string endpointAddress)
     {
+        using var httpClient = httpClientFactory.CreateClient();
         var discoveryDocument = await httpClient.GetDiscoveryDocumentAsync(endpointAddress, new DiscoveryPolicy
         {
             ValidateIssuerName = !configuration.SkipIssuerNameValidation,
