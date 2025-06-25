@@ -16,5 +16,8 @@ internal static class Endpoints
         app.MapGet($"/{endpointName}/error", () => Results.Text("Login failed."));
 
         app.MapGet($"/{endpointName}/sign_out", EndSessionEndpoint.Get);
+
+        app.Map($"/{endpointName}/auth", AuthEndpoint.Request);
     }
 }
+
