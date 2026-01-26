@@ -63,7 +63,17 @@ internal static class EndSessionEndpoint
         }
 
         context.Session.Clear();
-        context.Response.Cookies.Delete(proxyOptions.CookieName);
+        
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            IsEssential = true,
+            Domain = proxyOptions.CookieDomain,
+            Secure = proxyOptions.CookieSecure ?? false,
+            SameSite = proxyOptions.CookieSameSite ?? SameSiteMode.Unspecified
+        };
+        
+        context.Response.Cookies.Delete(proxyOptions.CookieName, cookieOptions);
 
         var endSessionEndpoint = await identityProvider.GetEndSessionEndpointAsync(idToken, baseAddress);
 

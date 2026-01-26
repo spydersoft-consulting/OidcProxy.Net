@@ -47,6 +47,21 @@ internal static class LoginEndpoint
 
             await logger.InformAsync($"Redirect({authorizeRequest.AuthorizeUri})");
 
+            // Regenerate session to prevent session fixation attacks
+            context.Session.Clear();
+            await context.Session.CommitAsync();
+
+            // Delete old session cookie to force new session ID generation
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                IsEssential = true,
+                Domain = options.CookieDomain,
+                Secure = options.CookieSecure ?? false,
+                SameSite = options.CookieSameSite ?? SameSiteMode.Unspecified
+            };
+            context.Response.Cookies.Delete(options.CookieName, cookieOptions);
+
             context.Response.Redirect(authorizeRequest.AuthorizeUri.ToString());
         }
         catch (Exception e)
