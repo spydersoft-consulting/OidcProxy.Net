@@ -7,6 +7,7 @@ using OidcProxy.Net.Jwt.SignatureValidation;
 using OidcProxy.Net.Logging;
 using OidcProxy.Net.ModuleInitializers;
 using OidcProxy.Net.OpenIdConnect;
+using System.Security.Cryptography;
 
 namespace OidcProxy.Net.Endpoints;
 
@@ -20,7 +21,8 @@ internal static class CallbackEndpoint
         [FromServices] IIdentityProvider identityProvider,
         [FromServices] ITokenParser tokenParser,
         [FromServices] IJwtSignatureValidator jwtSignatureValidator,
-        [FromServices] IAuthenticationCallbackHandler authenticationCallbackHandler)
+        [FromServices] IAuthenticationCallbackHandler authenticationCallbackHandler,
+        [FromServices] IPendingTokenStore pendingTokenStore)
     {
         try
         {
@@ -50,16 +52,33 @@ internal static class CallbackEndpoint
                     userPreferredLandingPage);
             }
 
-            await authSession.SaveAsync(tokenResponse);
+            // Phase 1: Session regeneration to prevent session fixation attacks
+            // Store tokens temporarily and redirect to complete with a fresh session
+            var pendingKey = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            await pendingTokenStore.StoreAsync(pendingKey, tokenResponse, userPreferredLandingPage);
 
-            await logger.InformAsync($"Redirect({proxyOptions.LandingPage})");
+            // Clear old session and delete the session cookie
+            context.Session.Clear();
+            await context.Session.CommitAsync();
 
-            var jwtPayload = tokenParser.ParseJwtPayload(tokenResponse.access_token);
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                IsEssential = true,
+                Domain = proxyOptions.CookieDomain,
+                Secure = proxyOptions.CookieSecure ?? false,
+                SameSite = proxyOptions.CookieSameSite ?? SameSiteMode.Unspecified,
+                Path = "/"
+            };
+            context.Response.Cookies.Delete(proxyOptions.CookieName, cookieOptions);
 
-            return await authenticationCallbackHandler.OnAuthenticated(context,
-                jwtPayload,
-                proxyOptions.LandingPage.ToString(),
-                userPreferredLandingPage);
+            // Redirect to session complete endpoint - browser will get a new session
+            var baseAddress = redirectUriFactory.DetermineHostName(context);
+            var sessionCompleteUrl = $"{baseAddress}/{proxyOptions.EndpointName}/session-complete?key={Uri.EscapeDataString(pendingKey)}";
+
+            await logger.InformAsync($"Session regeneration phase 1 complete. Redirect to session-complete endpoint.");
+
+            return Results.Redirect(sessionCompleteUrl);
         }
         catch (Exception e)
         {

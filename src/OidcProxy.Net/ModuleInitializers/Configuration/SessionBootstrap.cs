@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OidcProxy.Net.Locking;
 using OidcProxy.Net.Locking.Distributed.Redis;
 using OidcProxy.Net.Locking.InMemory;
+using OidcProxy.Net.OpenIdConnect;
 using RedLockNet;
 using RedLockNet.SERedis;
 using RedLockNet.SERedis.Configuration;
@@ -45,6 +46,9 @@ internal class SessionBootstrap : IBootstrap
                 }
 
             });
+
+        // Register pending token store for session regeneration
+        services.AddTransient<IPendingTokenStore, PendingTokenStore>();
 
         if (_connectionMultiplexer == null)
         {
