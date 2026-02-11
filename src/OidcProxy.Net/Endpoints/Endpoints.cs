@@ -13,6 +13,8 @@ internal static class Endpoints
 
         app.MapGet($"/{endpointName}/callback", CallbackEndpoint.Get);
 
+        app.MapGet($"/{endpointName}/session-complete", SessionCompleteEndpoint.Get);
+
         app.MapGet($"/{endpointName}/error", () => Results.Text("Login failed."));
 
         app.MapGet($"/{endpointName}/sign_out", EndSessionEndpoint.Get);
