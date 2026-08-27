@@ -1,0 +1,78 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Determine version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore
+        run: dotnet restore OidcProxy.Net.sln
+
+      - name: Build
+        run: dotnet build OidcProxy.Net.sln --no-restore --configuration Release -p:Version=${{ steps.version.outputs.version }}
+
+      # Scoped to the unit test projects only -- the solution also contains
+      # browser/live-IdP-dependent integration test projects (Auth0, EntraId)
+      # that need real tenant credentials and shouldn't run unattended here.
+      - name: Test
+        run: |
+          dotnet test unittests/OidcProxy.Net.Tests/OidcProxy.Net.Tests.csproj --no-build --configuration Release
+          dotnet test unittests/OidcProxy.Net.OpenIdConnect.Tests/OidcProxy.Net.OpenIdConnect.Tests.csproj --no-build --configuration Release
+          dotnet test unittests/OidcProxy.Net.Auth0.Tests/OidcProxy.Net.Auth0.Tests.csproj --no-build --configuration Release
+          dotnet test unittests/OidcProxy.Net.AzureAd.Tests/OidcProxy.Net.AzureAd.Tests.csproj --no-build --configuration Release
+
+      - name: Pack
+        run: |
+          mkdir -p ./artifacts
+          for proj in \
+            src/OidcProxy.Net/OidcProxy.Net.csproj \
+            src/OidcProxy.Net.OpenIdConnect/OidcProxy.Net.OpenIdConnect.csproj \
+            src/OidcProxy.Net.EntraId/OidcProxy.Net.EntraId.csproj \
+            src/OidcProxy.Net.Auth0/OidcProxy.Net.Auth0.csproj; do
+            dotnet pack "$proj" --no-build --configuration Release -p:Version=${{ steps.version.outputs.version }} --output ./artifacts
+          done
+          # Not part of OidcProxy.Net.sln (content-only template package), so
+          # it wasn't covered by the sln build above -- pack builds it itself.
+          dotnet pack templates/OidcProxy.Net.Templates/OidcProxy.Net.Templates.csproj --configuration Release -p:PackageVersion=${{ steps.version.outputs.version }} --output ./artifacts
+
+      # Trusted Publishing (OIDC): requires a policy configured at
+      # https://www.nuget.org/account/trustedpublishing for
+      # Repository Owner=spydersoft-consulting, Repository=OidcProxy.Net,
+      # Workflow File=publish.yml. No long-lived nuget.org API key needed.
+      - name: NuGet login (OIDC -> temp API key)
+        uses: NuGet/login@v1
+        id: nuget_login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push to nuget.org
+        run: dotnet nuget push "./artifacts/*.nupkg" --api-key ${{ steps.nuget_login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Push to GitHub Packages
+        run: dotnet nuget push "./artifacts/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/spydersoft-consulting/index.json --skip-duplicate
