@@ -10,12 +10,10 @@ namespace OidcProxy.Net.EntraId;
 public class EntraIdIdentityProvider(
     ILogger logger,
     IMemoryCache cache,
-    HttpClient httpClient,
+    IHttpClientFactory httpClientFactory,
     EntraIdConfig configuration)
-    : OpenIdConnectIdentityProvider(logger, cache, httpClient, configuration)
+    : OpenIdConnectIdentityProvider(logger, cache, httpClientFactory, configuration)
 {
-    private readonly HttpClient _httpClient = httpClient;
-
     protected override string DiscoveryEndpointAddress => configuration.DiscoveryEndpoint;
 
     public override async Task<AuthorizeRequest> GetAuthorizeUrlAsync(string redirectUri)
@@ -40,7 +38,8 @@ public class EntraIdIdentityProvider(
 
     protected override async Task<DiscoveryDocument?> ObtainDiscoveryDocument(string endpointAddress)
     {
-        var httpResponse = await _httpClient.GetAsync(endpointAddress);
+        using var httpClient = httpClientFactory.CreateClient();
+        var httpResponse = await httpClient.GetAsync(endpointAddress);
         return await httpResponse.Content.ReadFromJsonAsync<DiscoveryDocument>();
     }
 }

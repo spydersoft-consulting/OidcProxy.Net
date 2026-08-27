@@ -7,12 +7,12 @@ using OidcProxy.Net.OpenIdConnect;
 
 namespace Host.TestApps.IntegrationTests.Specs.Glue.OidcProxyNet.OpenIdConnectImplementations;
 
-public class MockedOpenIdConnectIdentityProvider(MockedOpenIdConnectIdentityProviderSettings settings, 
-    ILogger logger, 
-    IMemoryCache cache, 
-    HttpClient httpClient, 
-    OpenIdConnectConfig configuration) 
-    : OpenIdConnectIdentityProvider(logger, cache, httpClient, configuration)
+public class MockedOpenIdConnectIdentityProvider(MockedOpenIdConnectIdentityProviderSettings settings,
+    ILogger logger,
+    IMemoryCache cache,
+    IHttpClientFactory httpClientFactory,
+    OpenIdConnectConfig configuration)
+    : OpenIdConnectIdentityProvider(logger, cache, httpClientFactory, configuration)
 {
     public static bool HasRefreshedToken { get; set; } = false;
 

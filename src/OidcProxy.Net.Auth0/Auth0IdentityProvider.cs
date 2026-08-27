@@ -8,11 +8,11 @@ namespace OidcProxy.Net.Auth0;
 public class Auth0IdentityProvider(
     ILogger logger,
     IMemoryCache cache,
-    HttpClient client,
+    IHttpClientFactory httpClientFactory,
     Auth0Config config)
     : OpenIdConnectIdentityProvider(logger,
         cache,
-        client,
+        httpClientFactory,
         MapConfiguration(config))
 {
     protected override Parameters? GetFrontChannelParameters()

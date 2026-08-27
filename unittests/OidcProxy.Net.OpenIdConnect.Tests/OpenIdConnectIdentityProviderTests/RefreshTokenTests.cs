@@ -8,25 +8,28 @@ namespace OidcProxy.Net.OpenIdConnect.Tests.OpenIdConnectIdentityProviderTests;
 public class RefreshTokenTests
 {
     private const string TraceIdentifier = "test";
-    private readonly HttpClient _httpClient;
+    private readonly WebApplicationFactory<TestProgram> _webApplicationFactory;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly OpenIdConnectConfig _config;
-    private readonly TestCache _cache;    
+    private readonly TestCache _cache;
     private readonly ILogger _logger = Substitute.For<ILogger>();
 
 
     public RefreshTokenTests()
     {
-        _httpClient = new WebApplicationFactory<TestProgram>()
-            .CreateClient();
-        
+        _webApplicationFactory = new WebApplicationFactory<TestProgram>();
+
+        _httpClientFactory = Substitute.For<IHttpClientFactory>();
+        _httpClientFactory.CreateClient(Arg.Any<string>()).Returns(_ => _webApplicationFactory.CreateClient());
+
         _config = new OpenIdConnectConfig
         {
-            Authority = _httpClient!.BaseAddress!.ToString()
+            Authority = _webApplicationFactory.CreateClient().BaseAddress!.ToString()
         };
-        
+
         _cache = new TestCache();
     }
-    
+
     [Fact]
     public async Task ShouldApplyExpiresInValueFromTokenResponse()
     {
@@ -38,9 +41,9 @@ public class RefreshTokenTests
                 ""refresh_token"":""IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk"",
                 ""scope"":""create""
             }";
-        
+
         var expected = DateTime.UtcNow.AddSeconds(3600);
-        var sut = new OpenIdConnectIdentityProvider(_logger, _cache, _httpClient, _config);
+        var sut = new OpenIdConnectIdentityProvider(_logger, _cache, _httpClientFactory, _config);
 
         var tokenResponse = await sut.RefreshTokenAsync("test", TraceIdentifier);
 
