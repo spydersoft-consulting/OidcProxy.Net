@@ -5,17 +5,17 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         
-        <PackageId>OidcProxy.Net.Auth0</PackageId>
+        <PackageId>Spydersoft.OidcProxy.Net.Auth0</PackageId>
         <Version>5.4.1</Version>
-        <Authors>Albert Starreveld</Authors>
-        <Company>OidcProxy.net</Company>
+        <Authors>Albert Starreveld, Spydersoft Consulting</Authors>
+        <Company>Spydersoft Consulting</Company>
         <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
-        <Description>An extendible framework for .NET to implement the BFF Security Pattern (a.k.a. Token Handler Pattern) in Single Page Applications.</Description>
-        <RepositoryUrl>https://github.com/thecloudnativewebapp/OidcProxy.Net</RepositoryUrl>
+        <Description>An extendible framework for .NET to implement the BFF Security Pattern (a.k.a. Token Handler Pattern) in Single Page Applications. This is a Spydersoft Consulting fork/continuation of the original OidcProxy.Net project by Albert Starreveld.</Description>
+        <RepositoryUrl>https://github.com/spydersoft-consulting/OidcProxy.Net</RepositoryUrl>
         <PackageTags>Yarp, Auth0, Authentication, Security</PackageTags>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Title>OidcProxy.Net.Auth0</Title>
-        <PackageProjectUrl>https://oidcproxy.net</PackageProjectUrl>
+        <Title>Spydersoft.OidcProxy.Net.Auth0</Title>
+        <PackageProjectUrl>https://github.com/spydersoft-consulting/OidcProxy.Net</PackageProjectUrl>
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
         <PackageIcon>logo.png</PackageIcon>
         <SignAssembly>true</SignAssembly>
