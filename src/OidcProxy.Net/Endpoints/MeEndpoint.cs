@@ -10,9 +10,19 @@ internal static class MeEndpoint
     public static async Task<IResult> Get(HttpContext context,
         [FromServices] AuthSession authSession,
         [FromServices] ITokenParser tokenParser,
-        [FromServices] IClaimsTransformation claimsTransformation)
+        [FromServices] IClaimsTransformation claimsTransformation,
+        [FromServices] TokenFactory tokenFactory)
     {
         if (!authSession.HasIdToken())
+        {
+            return Results.Unauthorized();
+        }
+
+        try
+        {
+            await tokenFactory.RenewAccessTokenIfExpiredAsync(context.TraceIdentifier);
+        }
+        catch (TokenRenewalFailedException)
         {
             return Results.Unauthorized();
         }
