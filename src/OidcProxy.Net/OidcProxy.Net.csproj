@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
@@ -30,13 +30,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="jose-jwt" Version="5.2.0" />
-      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.24" />
-      <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.24" />
-      <PackageReference Include="Microsoft.Identity.Client" Version="4.82.1" />
-      <PackageReference Include="RedLock.net" Version="2.3.2" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" />
-      <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
+      <PackageReference Include="jose-jwt" />
+      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+      <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" />
+      <PackageReference Include="Microsoft.Identity.Client" />
+      <PackageReference Include="RedLock.net" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+      <PackageReference Include="Yarp.ReverseProxy" />
     </ItemGroup>
 
     <ItemGroup>

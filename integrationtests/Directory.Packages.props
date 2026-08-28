@@ -1,0 +1,10 @@
+<Project>
+
+  <!-- Integration tests are out of scope for the net8/9/10 multi-target + Central
+       Package Management migration; opt this subtree out so PackageReference
+       Version attributes here keep working unchanged. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+</Project>
