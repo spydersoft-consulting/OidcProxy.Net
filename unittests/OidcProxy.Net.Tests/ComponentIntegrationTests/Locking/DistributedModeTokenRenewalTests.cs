@@ -60,8 +60,7 @@ public class DistributedModeTokenRenewalTests : IAsyncLifetime
             Guid.NewGuid().ToString(),
             DateTime.UtcNow.AddSeconds(-1)));
         
-        _redisContainer = new RedisBuilder()
-            .WithImage("redis:7.0")
+        _redisContainer = new RedisBuilder("redis:7.0")
             .Build();
         
         await _redisContainer.StartAsync();

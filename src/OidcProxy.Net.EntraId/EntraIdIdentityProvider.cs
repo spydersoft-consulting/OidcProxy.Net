@@ -7,25 +7,34 @@ using Microsoft.Identity.Client;
 
 namespace OidcProxy.Net.EntraId;
 
-public class EntraIdIdentityProvider(
-    ILogger logger,
-    IMemoryCache cache,
-    IHttpClientFactory httpClientFactory,
-    EntraIdConfig configuration)
-    : OpenIdConnectIdentityProvider(logger, cache, httpClientFactory, configuration)
+public class EntraIdIdentityProvider : OpenIdConnectIdentityProvider
 {
-    protected override string DiscoveryEndpointAddress => configuration.DiscoveryEndpoint;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly EntraIdConfig _configuration;
+
+    public EntraIdIdentityProvider(
+        ILogger logger,
+        IMemoryCache cache,
+        IHttpClientFactory httpClientFactory,
+        EntraIdConfig configuration)
+        : base(logger, cache, httpClientFactory, configuration)
+    {
+        _httpClientFactory = httpClientFactory;
+        _configuration = configuration;
+    }
+
+    protected override string DiscoveryEndpointAddress => _configuration.DiscoveryEndpoint;
 
     public override async Task<AuthorizeRequest> GetAuthorizeUrlAsync(string redirectUri)
     {
-        var app = ConfidentialClientApplicationBuilder.Create(configuration.ClientId)
-            .WithClientSecret(configuration.ClientSecret)
+        var app = ConfidentialClientApplicationBuilder.Create(_configuration.ClientId)
+            .WithClientSecret(_configuration.ClientSecret)
             .Build();
 
-        var startUrl = await app.GetAuthorizationRequestUrl(configuration.Scopes)
+        var startUrl = await app.GetAuthorizationRequestUrl(_configuration.Scopes)
             .WithPkce(out var verifier)
             .WithRedirectUri(redirectUri)
-            .WithTenantId(configuration.TenantId)
+            .WithTenantId(_configuration.TenantId)
             .ExecuteAsync();
         
         return new AuthorizeRequest(startUrl, verifier);
@@ -38,7 +47,7 @@ public class EntraIdIdentityProvider(
 
     protected override async Task<DiscoveryDocument?> ObtainDiscoveryDocument(string endpointAddress)
     {
-        using var httpClient = httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient();
         var httpResponse = await httpClient.GetAsync(endpointAddress);
         return await httpResponse.Content.ReadFromJsonAsync<DiscoveryDocument>();
     }

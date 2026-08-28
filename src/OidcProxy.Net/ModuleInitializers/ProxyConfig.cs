@@ -63,8 +63,8 @@ public class ProxyConfig : IAppSettingsSection
         
         if (options.Mode != Mode.AuthenticateOnly)
         {
-            var routes = ReverseProxy?.Routes.ToRouteConfig();
-            var clusters = ReverseProxy?.Clusters.ToClusterConfig();
+            var routes = ReverseProxy?.Routes.ToRouteConfig() ?? [];
+            var clusters = ReverseProxy?.Clusters.ToClusterConfig() ?? [];
 
             options.ConfigureYarp(routes, clusters);
         }

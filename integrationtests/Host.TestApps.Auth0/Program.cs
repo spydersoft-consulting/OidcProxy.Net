@@ -29,7 +29,7 @@ app.MapGet("/custom/me", async context =>
 
 app.MapGet("/", async context =>
 {
-    context.Response.WriteAsync("<html><body>" +
+    await context.Response.WriteAsync("<html><body>" +
                                 "<a href=\"/oauth2/sign_in\">login</a><br>" +
                                 "<a href=\"/oauth2/userinfo\">me</a><br>" +
                                 "<a href=\"/oauth2/sign_out\">sign out</a><br>" +

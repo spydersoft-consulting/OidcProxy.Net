@@ -103,6 +103,7 @@ public class Auth0EndSessionUrlBuilderTests
         actual.ToString().Count(x => x.Equals('&')).Should().Be(2);
     }
     
+    [Theory]
     [InlineData(true, false, "https://foo.bar?p1=1&p2=2", "asdfghjkll")]
     [InlineData(false, false, "https://foo.bar?p1=1&p2=2", "asdfghjkll")]
     [InlineData(true, true, null, "asdfghjkll")]
@@ -121,10 +122,13 @@ public class Auth0EndSessionUrlBuilderTests
         
         var actual = auth0LogoutBuilder.Build();
 
+        // id_token_hint is only ever appended for the OIDC logout endpoint (Auth0's
+        // /v2/logout endpoint does not accept it), so the second query string
+        // separator only shows up when useOidcLogoutEndpoint is true.
         actual.ToString().Count(x => x.Equals('?')).Should().Be(1);
-        actual.ToString().Count(x => x.Equals('&')).Should().Be(1);
+        actual.ToString().Count(x => x.Equals('&')).Should().Be(useOidcLogoutEndpoint ? 1 : 0);
     }
-    
+
     [InlineData(true, false, null, "asdfghjkll")]
     [InlineData(false, false, "https://foo.bar?p1=1&p2=2", null)]
     [InlineData(true, false, "https://foo.bar?p1=1&p2=2", null)]

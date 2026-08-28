@@ -11,10 +11,10 @@ internal class JsonWebKeySet : List<KeySet>
             {
                 var exponent = x.E.Base64UrlDecode();
                 var modulus = x.N.Base64UrlDecode();
-                
+
                 return new KeySet(exponent, modulus, x.Kid);
             })
-            .ToArray();
+            .ToArray() ?? [];
 
         return new(keySets);
     }

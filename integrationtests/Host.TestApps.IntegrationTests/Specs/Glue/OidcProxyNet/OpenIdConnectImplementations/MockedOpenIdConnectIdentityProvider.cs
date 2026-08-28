@@ -50,9 +50,9 @@ public class MockedOpenIdConnectIdentityProvider(MockedOpenIdConnectIdentityProv
             token.ExpiryDate);
     }
 
-    private static string MimicTamperedAccessToken(TokenResponse token, MockedOpenIdConnectIdentityProviderSettings settings)
+    private static string? MimicTamperedAccessToken(TokenResponse token, MockedOpenIdConnectIdentityProviderSettings settings)
     {
-        var tokenParts = token?.access_token?.Split('.') ?? Array.Empty<string>();
+        var tokenParts = token.access_token?.Split('.') ?? Array.Empty<string>();
         if (tokenParts.Length != 3)
         {
             Console.WriteLine("Invalid JWT token format.");

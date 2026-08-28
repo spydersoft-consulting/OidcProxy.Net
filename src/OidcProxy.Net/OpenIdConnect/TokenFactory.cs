@@ -24,7 +24,12 @@ internal class TokenFactory(
 
                 try
                 {
-                    var refreshToken = authSession.GetRefreshToken(); // todo: What is refresh_token is null?
+                    var refreshToken = authSession.GetRefreshToken();
+                    if (refreshToken == null)
+                    {
+                        throw new TokenRenewalFailedException("Failed to renew token. No refresh_token is present in the session.");
+                    }
+
                     var tokenResponse = await identityProvider.RefreshTokenAsync(refreshToken, traceIdentifier);
 
                     if (!(await jwtSignatureValidator.Validate(tokenResponse.access_token)))
