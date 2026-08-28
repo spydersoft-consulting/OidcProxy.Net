@@ -1,9 +1,13 @@
 # OidcProxy.Net by [Entrypage.io](https://www.entrypage.io)
 
-![](https://github.com/thecloudnativewebapp/GoCloudNative.Bff/actions/workflows/ci.yml/badge.svg)
-![Nuget](https://img.shields.io/nuget/dt/OidcProxy.Net)
-![Version](https://img.shields.io/nuget/v/OidcProxy.Net)
-[![Twitter](https://shields.io/twitter/follow/oidcproxydotnet)](https://twitter.com/intent/follow?screen_name=oidcproxydotnet)
+![](https://github.com/spydersoft-consulting/OidcProxy.Net/actions/workflows/ci.yml/badge.svg)
+![Nuget](https://img.shields.io/nuget/dt/Spydersoft.OidcProxy.Net)
+![Version](https://img.shields.io/nuget/v/Spydersoft.OidcProxy.Net)
+
+> **Note:** This repository is a Spydersoft Consulting fork of the original OidcProxy.Net
+> project. It is published and maintained separately under the `Spydersoft.OidcProxy.Net`
+> package name. See [NOTICE.md](NOTICE.md) for details on why this fork exists and what has
+> changed.
 
 ## Table of contents
 
