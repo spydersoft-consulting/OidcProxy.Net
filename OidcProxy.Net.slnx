@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/integrationtests/">
+    <Project Path="integrationtests/Host.TestApps.Auth0.IntegrationTests/Host.TestApps.Auth0.IntegrationTests.csproj" />
+    <Project Path="integrationtests/Host.TestApps.Auth0/Host.TestApps.Auth0.csproj" />
+    <Project Path="integrationtests/Host.TestApps.Echo/Host.TestApps.Echo.csproj" />
+    <Project Path="integrationtests/Host.TestApps.EntraId/Host.TestApps.EntraId.csproj" />
+    <Project Path="integrationtests/Host.TestApps.IntegrationTests/Host.TestApps.IntegrationTests.csproj" />
+    <Project Path="integrationtests/Host.TestApps.OpenIdDict/Host.TestApps.OpenIdDict.csproj" />
+  </Folder>
+  <Folder Name="/oauth2proxy/" />
+  <Folder Name="/src/">
+    <Project Path="src/OidcProxy.Net.Auth0/OidcProxy.Net.Auth0.csproj" />
+    <Project Path="src/OidcProxy.Net.EntraId/OidcProxy.Net.EntraId.csproj" />
+    <Project Path="src/OidcProxy.Net.OpenIdConnect/OidcProxy.Net.OpenIdConnect.csproj" />
+    <Project Path="src/OidcProxy.Net/OidcProxy.Net.csproj" />
+  </Folder>
+  <Folder Name="/unittests/">
+    <Project Path="unittests/OidcProxy.Net.Auth0.Tests/OidcProxy.Net.Auth0.Tests.csproj" />
+    <Project Path="unittests/OidcProxy.Net.AzureAd.Tests/OidcProxy.Net.AzureAd.Tests.csproj" />
+    <Project Path="unittests/OidcProxy.Net.OpenIdConnect.Tests.TestServer/OidcProxy.Net.OpenIdConnect.Tests.TestServer.csproj" />
+    <Project Path="unittests/OidcProxy.Net.OpenIdConnect.Tests/OidcProxy.Net.OpenIdConnect.Tests.csproj" />
+    <Project Path="unittests/OidcProxy.Net.Tests/OidcProxy.Net.Tests.csproj" />
+  </Folder>
+</Solution>

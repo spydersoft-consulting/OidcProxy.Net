@@ -32,10 +32,10 @@ jobs:
           echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Restore
-        run: dotnet restore OidcProxy.Net.sln
+        run: dotnet restore OidcProxy.Net.slnx
 
       - name: Build
-        run: dotnet build OidcProxy.Net.sln --no-restore --configuration Release -p:Version=${{ steps.version.outputs.version }}
+        run: dotnet build OidcProxy.Net.slnx --no-restore --configuration Release -p:Version=${{ steps.version.outputs.version }}
 
       # Scoped to the unit test projects only -- the solution also contains
       # browser/live-IdP-dependent integration test projects (Auth0, EntraId)
@@ -57,7 +57,7 @@ jobs:
             src/OidcProxy.Net.Auth0/OidcProxy.Net.Auth0.csproj; do
             dotnet pack "$proj" --no-build --configuration Release -p:Version=${{ steps.version.outputs.version }} --output ./artifacts
           done
-          # Not part of OidcProxy.Net.sln (content-only template package), so
+          # Not part of OidcProxy.Net.slnx (content-only template package), so
           # it wasn't covered by the sln build above -- pack builds it itself.
           dotnet pack templates/OidcProxy.Net.Templates/OidcProxy.Net.Templates.csproj --configuration Release -p:PackageVersion=${{ steps.version.outputs.version }} --output ./artifacts
 
