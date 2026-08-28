@@ -12,16 +12,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: |
+          8.0.x
+          9.0.x
 
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v3
       with:
-        dotnet-version: 9.0.x
+        versionSpec: "6.x"
+
+    - name: Determine version
+      id: version
+      uses: gittools/actions/gitversion/execute@v3
+
+    - name: Report version
+      run: echo "Computed version ${{ steps.version.outputs.informationalVersion }}" >> "$GITHUB_STEP_SUMMARY"
 
     - name: Run unit tests
       run: dotnet test --filter 'FullyQualifiedName~.UnitTests'
