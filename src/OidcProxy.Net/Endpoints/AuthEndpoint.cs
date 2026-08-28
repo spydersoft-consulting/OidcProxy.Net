@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using OidcProxy.Net.Jwt.SignatureValidation;
 using OidcProxy.Net.Logging;
 using OidcProxy.Net.ModuleInitializers;
+using OidcProxy.Net.OpenIdConnect;
 
 namespace OidcProxy.Net.Endpoints;
 
@@ -20,7 +21,8 @@ internal static class AuthEndpoint
         [FromServices] AuthSession authSession,
         [FromServices] ILogger logger,
         [FromServices] ProxyOptions proxyOptions,
-        [FromServices] IJwtSignatureValidator jwtSignatureValidator)
+        [FromServices] IJwtSignatureValidator jwtSignatureValidator,
+        [FromServices] TokenFactory tokenFactory)
     {
         if (proxyOptions.SkipJwtBearerTokens && context.Request.Headers.ContainsKey("Authorization"))
         {
@@ -38,11 +40,20 @@ internal static class AuthEndpoint
             }
         }
 
-        if (authSession.HasAccessToken())
+        if (!authSession.HasAccessToken())
         {
-            return Results.Ok();
+            return Results.Forbid();
         }
 
-        return Results.Forbid();
+        try
+        {
+            await tokenFactory.RenewAccessTokenIfExpiredAsync(context.TraceIdentifier);
+        }
+        catch (TokenRenewalFailedException)
+        {
+            return Results.Forbid();
+        }
+
+        return Results.Ok();
     }
 }
