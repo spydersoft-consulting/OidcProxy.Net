@@ -2,7 +2,7 @@ namespace OidcProxy.Net.Auth0;
 
 public class Auth0ProxyConfig : ProxyConfig
 {
-    public Auth0Config Auth0 { get; set; }
+    public required Auth0Config Auth0 { get; set; }
 
     public override bool Validate(out IEnumerable<string> errors)
     {

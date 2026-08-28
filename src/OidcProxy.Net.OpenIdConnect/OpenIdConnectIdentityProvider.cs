@@ -71,21 +71,27 @@ public class OpenIdConnectIdentityProvider(
                 "document does not contain a token endpoint.");
         }
 
-        using var httpClient = httpClientFactory.CreateClient();
-        var response = await httpClient.RequestTokenAsync(new AuthorizationCodeTokenRequest
+        var tokenRequest = new AuthorizationCodeTokenRequest
         {
              Address = wellKnown.token_endpoint,
              GrantType = OidcConstants.GrantTypes.AuthorizationCode,
              ClientId = configuration.ClientId,
              ClientSecret = configuration.ClientSecret,
-             
+
              Parameters =
              {
                  { OidcConstants.TokenRequest.Code, code },
                  { OidcConstants.TokenRequest.RedirectUri, redirectUri },
-                 { OidcConstants.TokenRequest.CodeVerifier, codeVerifier },
              }
-        });
+        };
+
+        if (!string.IsNullOrEmpty(codeVerifier))
+        {
+            tokenRequest.Parameters.Add(OidcConstants.TokenRequest.CodeVerifier, codeVerifier);
+        }
+
+        using var httpClient = httpClientFactory.CreateClient();
+        var response = await httpClient.RequestTokenAsync(tokenRequest);
         
         if (response.IsError)
         {
@@ -104,6 +110,13 @@ public class OpenIdConnectIdentityProvider(
     {
         var openIdConfiguration = await GetDiscoveryDocument();
         var jwksUri = openIdConfiguration.jwks_uri;
+
+        if (jwksUri == null)
+        {
+            throw new ApplicationException(
+                "Unable to retrieve JSON Web Key Set. The well-known/openid-configuration " +
+                "document does not contain a jwks_uri.");
+        }
 
         if (!invalidateCache && cache.TryGetValue(jwksUri, out var keySet) && keySet != null)
         {
@@ -230,12 +243,12 @@ public class OpenIdConnectIdentityProvider(
     {
         var endpointAddress = DiscoveryEndpointAddress;
 
-        if (cache.TryGetValue(DiscoveryEndpointAddress, out var discoveryDocument))
+        if (cache.TryGetValue(DiscoveryEndpointAddress, out var cachedValue) && cachedValue is DiscoveryDocument cachedDocument)
         {
-            return (DiscoveryDocument)discoveryDocument;
+            return cachedDocument;
         }
-        
-        discoveryDocument = await ObtainDiscoveryDocument(endpointAddress);
+
+        var discoveryDocument = await ObtainDiscoveryDocument(endpointAddress);
 
         if (discoveryDocument == null)
         {
@@ -245,7 +258,7 @@ public class OpenIdConnectIdentityProvider(
         }
 
         cache.Set(endpointAddress, discoveryDocument, TimeSpan.FromHours(1));
-        return (DiscoveryDocument)discoveryDocument;
+        return discoveryDocument;
     }
 }
 

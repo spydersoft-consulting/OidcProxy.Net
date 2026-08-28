@@ -65,7 +65,7 @@ public class SslCertificateTests
     [Fact]
     public void WhenCertificateWithoutPrivateKey_ItShouldThrowNotSupportedException()
     {
-        var cert = new X509Certificate2();
+        var cert = X509CertificateLoader.LoadCertificate(File.ReadAllBytes(CertPath));
         var sut = new JweParser(new SslCertificate(cert));
 
         var actual = () => sut.ParseJwtPayload(AccessToken);

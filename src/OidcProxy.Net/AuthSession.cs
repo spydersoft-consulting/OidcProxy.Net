@@ -204,8 +204,11 @@ internal class AuthSession : IAuthSession
     {
         await SetUserPreferredLandingPageAsync(userPreferredLandingPage);
 
+        var httpContext = _httpContextAccessor.HttpContext
+            ?? throw new InvalidOperationException("Unable to authenticate outside of an active HTTP request.");
+
         var redirectUri = _redirectUriFactory.DetermineRedirectUri(
-            _httpContextAccessor.HttpContext, 
+            httpContext,
             _oidcProxyReservedEndpointName.ToString()
         );
         

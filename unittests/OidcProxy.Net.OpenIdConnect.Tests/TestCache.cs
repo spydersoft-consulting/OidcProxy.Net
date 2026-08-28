@@ -28,11 +28,11 @@ public class TestCache : IMemoryCache
         }
     }
 
-    public bool TryGetValue(object key, out object value)
+    public bool TryGetValue(object key, out object? value)
     {
         var cachedItem = _cache.SingleOrDefault(x => x.Key == key);
-        value = cachedItem?.Value ?? null!;
-        return cachedItem?.Value != null;
+        value = cachedItem?.Value;
+        return value != null;
     }
 
     private class TestCacheEntry : ICacheEntry
@@ -53,7 +53,7 @@ public class TestCache : IMemoryCache
         public CacheItemPriority Priority { get; set; } = CacheItemPriority.Normal;
         public long? Size { get; set; }
         public TimeSpan? SlidingExpiration { get; set; } = TimeSpan.FromDays(1);
-        public object Value { get; set; }
+        public object? Value { get; set; }
         
         public void Dispose()
         {

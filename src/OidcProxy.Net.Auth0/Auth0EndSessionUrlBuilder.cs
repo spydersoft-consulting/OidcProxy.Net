@@ -17,18 +17,18 @@ internal class Auth0EndSessionUrlBuilder
         return this;
     }
     
-    public Auth0EndSessionUrlBuilder WithRedirectUrl(string redirectUrl)
+    public Auth0EndSessionUrlBuilder WithRedirectUrl(string? redirectUrl)
     {
         // Docs on redirect URL
         // https://auth0.com/docs/authenticate/login/logout/redirect-users-after-logout
-        
-        _redirectUrl = redirectUrl;
+
+        _redirectUrl = redirectUrl ?? string.Empty;
         return this;
     }
 
-    public Auth0EndSessionUrlBuilder WithIdTokenHint(string idToken)
+    public Auth0EndSessionUrlBuilder WithIdTokenHint(string? idToken)
     {
-        _idTokenHint = idToken;
+        _idTokenHint = idToken ?? string.Empty;
         return this;
     }
 
