@@ -11,11 +11,5 @@ public class Scopes : List<string>
         {
             Add(openId);
         }
-        
-        const string offlineAccessScope = "offline_access";
-        if (!Contains(offlineAccessScope))
-        {
-            Add(offlineAccessScope);
-        }
     }
 }
