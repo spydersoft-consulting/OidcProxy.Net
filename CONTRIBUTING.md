@@ -59,7 +59,22 @@ Please make sure tests pass locally before opening a pull request.
 
 ## Making a change
 
-1. **Cut a branch from `main`.** Branch off the latest `main` in this fork
+### Who branches where
+
+Write access to this repository is restricted to its maintainer(s). This
+means:
+
+- **Maintainers** (anyone with push access) cut a branch directly in this
+  repository off the latest `main`.
+- **Everyone else** [forks the repository](https://github.com/spydersoft-consulting/OidcProxy.Net/fork)
+  and branches off `main` in their fork. GitHub only allows pushing branches
+  directly to this repo if you have write access, so this is the required
+  path for external contributions — open your pull request from your fork's
+  branch back to this repo's `main`.
+
+Either way, the rest of the workflow is the same:
+
+1. Branch off the latest `main` in this fork
    (`spydersoft-consulting/OidcProxy.Net`), not from the upstream project.
    Use a short, descriptive branch name, e.g. `fix/short-description` or
    `feature/short-description`.
@@ -80,8 +95,9 @@ You don't need to manually bump version numbers.
 
 ## Submitting a pull request
 
-1. Push your branch and open a pull request against this repository's `main`
-   branch (**not** `oidcproxydotnet/OidcProxy.Net`).
+1. Push your branch (in this repo if you're a maintainer, or in your fork
+   otherwise) and open a pull request against this repository's `main` branch
+   (**not** `oidcproxydotnet/OidcProxy.Net`).
 2. Describe what the change does and why, and link any related issues.
 3. Ensure the CI workflow passes (build + unit tests).
 4. A maintainer will review your PR and may request changes before merging.
