@@ -27,7 +27,7 @@ public class OpenIdConnectIdentityProvider(
 
     public virtual async Task<AuthorizeRequest> GetAuthorizeUrlAsync(string redirectUri)
     { 
-        var scopes = new Scopes(configuration.Scopes);
+        var scopes = new Scopes(configuration.Scopes, configuration.RequestOfflineAccessScope);
 
         var client = new OidcClient(new OidcClientOptions
         {
@@ -139,7 +139,7 @@ public class OpenIdConnectIdentityProvider(
     public virtual async Task<TokenResponse> RefreshTokenAsync(string refreshToken, string traceIdentifier)
     {
         var openIdConfiguration = await GetDiscoveryDocument();
-        var scopes = new Scopes(configuration.Scopes);
+        var scopes = new Scopes(configuration.Scopes, configuration.RequestOfflineAccessScope);
 
         using var httpClient = httpClientFactory.CreateClient();
         var response = await httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest

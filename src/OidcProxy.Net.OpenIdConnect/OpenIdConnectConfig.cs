@@ -20,6 +20,8 @@ public class OpenIdConnectConfig
 
     public bool SkipIssuerNameValidation { get; set; } = false;
 
+    public bool RequestOfflineAccessScope { get; set; } = true;
+
     public virtual bool Validate(out IEnumerable<string> errors)
     {
         var results = new List<string>();
