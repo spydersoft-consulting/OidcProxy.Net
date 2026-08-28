@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "*.*.*"
 
 permissions:
   contents: read
@@ -16,6 +16,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -25,17 +27,20 @@ jobs:
             9.0.x
             10.0.x
 
-      - name: Determine version from tag
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3
+        with:
+          versionSpec: "6.x"
+
+      - name: Determine version
         id: version
-        run: |
-          TAG="${GITHUB_REF_NAME}"
-          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+        uses: gittools/actions/gitversion/execute@v3
 
       - name: Restore
         run: dotnet restore OidcProxy.Net.slnx
 
       - name: Build
-        run: dotnet build OidcProxy.Net.slnx --no-restore --configuration Release -p:Version=${{ steps.version.outputs.version }}
+        run: dotnet build OidcProxy.Net.slnx --no-restore --configuration Release -p:Version=${{ steps.version.outputs.majorMinorPatch }}
 
       # Scoped to the unit test projects only -- the solution also contains
       # browser/live-IdP-dependent integration test projects (Auth0, EntraId)
@@ -55,11 +60,11 @@ jobs:
             src/OidcProxy.Net.OpenIdConnect/OidcProxy.Net.OpenIdConnect.csproj \
             src/OidcProxy.Net.EntraId/OidcProxy.Net.EntraId.csproj \
             src/OidcProxy.Net.Auth0/OidcProxy.Net.Auth0.csproj; do
-            dotnet pack "$proj" --no-build --configuration Release -p:Version=${{ steps.version.outputs.version }} --output ./artifacts
+            dotnet pack "$proj" --no-build --configuration Release -p:Version=${{ steps.version.outputs.majorMinorPatch }} --output ./artifacts
           done
           # Not part of OidcProxy.Net.slnx (content-only template package), so
           # it wasn't covered by the sln build above -- pack builds it itself.
-          dotnet pack templates/OidcProxy.Net.Templates/OidcProxy.Net.Templates.csproj --configuration Release -p:PackageVersion=${{ steps.version.outputs.version }} --output ./artifacts
+          dotnet pack templates/OidcProxy.Net.Templates/OidcProxy.Net.Templates.csproj --configuration Release -p:PackageVersion=${{ steps.version.outputs.majorMinorPatch }} --output ./artifacts
 
       # Trusted Publishing (OIDC): requires a policy configured at
       # https://www.nuget.org/account/trustedpublishing for

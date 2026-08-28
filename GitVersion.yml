@@ -1,0 +1,22 @@
+assembly-versioning-scheme: MajorMinorPatchTag
+continuous-delivery-fallback-tag: ''
+mode: Mainline
+tag-prefix: ''
+branches:
+  main:
+    regex: main
+    tag: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+  feature:
+    regex: features?[/-]
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+ignore:
+  sha: []
