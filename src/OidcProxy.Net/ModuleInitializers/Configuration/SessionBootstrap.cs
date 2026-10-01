@@ -45,6 +45,10 @@ internal class SessionBootstrap : IBootstrap
                     o.Cookie.SameSite = options.CookieSameSite.Value;
                 }
 
+                if (options.CookieMaxAge.HasValue)
+                {
+                    o.Cookie.MaxAge = options.CookieMaxAge.Value;
+                }
             });
 
         // Register pending token store for session regeneration

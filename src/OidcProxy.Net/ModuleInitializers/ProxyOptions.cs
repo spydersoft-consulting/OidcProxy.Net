@@ -95,6 +95,14 @@ public class ProxyOptions
     public TimeSpan SessionIdleTimeout { get; set; } = TimeSpan.FromMinutes(20);
 
     /// <summary>
+    /// Gets or sets the maximum lifetime of the session cookie. When set, the browser persists the cookie across
+    /// browser restarts. This is a fixed lifetime, counted from the moment the cookie is issued (at login); it does
+    /// not slide with activity. The effective session length is the shorter of this value and
+    /// <see cref="SessionIdleTimeout"/>. When null (default), the cookie is a browser session cookie.
+    /// </summary>
+    public TimeSpan? CookieMaxAge { get; set; }
+
+    /// <summary>
     /// Gets ors sets a value which indicates whether or not the redirect_uri will automatically be rewritten to http
     /// instead of https. This feature might come in handy when hosting the software in a Docker image.
     /// </summary>
