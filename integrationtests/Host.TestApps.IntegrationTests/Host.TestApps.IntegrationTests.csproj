@@ -5,6 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>Host.TestApps.IntegrationTests</RootNamespace>
+        <IsTestProject>true</IsTestProject>
+        <EnableMSTestRunner>true</EnableMSTestRunner>
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,8 +17,10 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.13" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
         <PackageReference Include="MSTest.TestAdapter" Version="3.11.1" />
+        <PackageReference Include="Microsoft.Testing.Platform.MSBuild" Version="2.4.1" />
+        <PackageReference Include="Microsoft.Testing.Extensions.Telemetry" Version="2.4.1" />
+        <PackageReference Include="Microsoft.Testing.Extensions.VSTestBridge" Version="2.4.1" />
         <PackageReference Include="MSTest.TestFramework" Version="3.11.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="OpenIddict.AspNetCore" Version="7.2.0" />

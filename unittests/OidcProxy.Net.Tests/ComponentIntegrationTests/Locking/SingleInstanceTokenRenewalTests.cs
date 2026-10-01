@@ -43,7 +43,7 @@ public class SingleInstanceTokenRenewalTests : IAsyncLifetime
         }));
     }
     
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {        
         // Store an access token dummy in the session
         await _authSession.SaveAsync(new TokenResponse(Guid.NewGuid().ToString(),
@@ -73,11 +73,11 @@ public class SingleInstanceTokenRenewalTests : IAsyncLifetime
             new EndpointName("oauth2"));
     }
     
-    public Task DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         // i.l.e.
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
     
     [Fact]

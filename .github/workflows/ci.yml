@@ -20,6 +20,7 @@ jobs:
         dotnet-version: |
           8.0.x
           9.0.x
+          10.0.x
 
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v3
@@ -34,4 +35,7 @@ jobs:
       run: echo "Computed version ${{ steps.version.outputs.informationalVersion }}" >> "$GITHUB_STEP_SUMMARY"
 
     - name: Run unit tests
-      run: dotnet test --filter 'FullyQualifiedName~.UnitTests'
+      run: |
+        for proj in OidcProxy.Net.Tests OidcProxy.Net.OpenIdConnect.Tests OidcProxy.Net.Auth0.Tests OidcProxy.Net.AzureAd.Tests; do
+          dotnet test --project unittests/$proj --filter-namespace '*.UnitTests*' --ignore-exit-code 8
+        done

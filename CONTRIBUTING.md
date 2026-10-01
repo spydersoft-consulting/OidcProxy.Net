@@ -43,17 +43,23 @@ dotnet build OidcProxy.Net.slnx
 
 ### Running tests
 
-Unit tests run in CI via:
+Tests run on [Microsoft.Testing.Platform](https://learn.microsoft.com/dotnet/core/testing/microsoft-testing-platform-intro)
+(xUnit v3, plus MSTest for the SpecFlow integration project). This needs the .NET 10 SDK, because `global.json` opts
+`dotnet test` into the Microsoft.Testing.Platform runner. Unit tests run in CI via:
 
 ```bash
-dotnet test --filter 'FullyQualifiedName~.UnitTests'
+dotnet test --project unittests/OidcProxy.Net.Tests --filter-namespace '*.UnitTests*'
 ```
 
-Run the full suite (unit + integration) locally with:
+Run all tests in the solution (unit + integration) locally with:
 
 ```bash
-dotnet test
+dotnet test --solution OidcProxy.Net.slnx
 ```
+
+Note that the integration tests need real identity provider configuration and a local browser, so they are expected to
+fail on a fresh checkout. Add `--coverage --report-trx` to produce a coverage report (configured in `testconfig.json`)
+and a TRX result file.
 
 Please make sure tests pass locally before opening a pull request.
 

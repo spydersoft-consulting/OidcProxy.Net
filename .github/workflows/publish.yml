@@ -47,10 +47,10 @@ jobs:
       # that need real tenant credentials and shouldn't run unattended here.
       - name: Test
         run: |
-          dotnet test unittests/OidcProxy.Net.Tests/OidcProxy.Net.Tests.csproj --no-build --configuration Release
-          dotnet test unittests/OidcProxy.Net.OpenIdConnect.Tests/OidcProxy.Net.OpenIdConnect.Tests.csproj --no-build --configuration Release
-          dotnet test unittests/OidcProxy.Net.Auth0.Tests/OidcProxy.Net.Auth0.Tests.csproj --no-build --configuration Release
-          dotnet test unittests/OidcProxy.Net.AzureAd.Tests/OidcProxy.Net.AzureAd.Tests.csproj --no-build --configuration Release
+          dotnet test --project unittests/OidcProxy.Net.Tests/OidcProxy.Net.Tests.csproj --no-build --configuration Release
+          dotnet test --project unittests/OidcProxy.Net.OpenIdConnect.Tests/OidcProxy.Net.OpenIdConnect.Tests.csproj --no-build --configuration Release
+          dotnet test --project unittests/OidcProxy.Net.Auth0.Tests/OidcProxy.Net.Auth0.Tests.csproj --no-build --configuration Release
+          dotnet test --project unittests/OidcProxy.Net.AzureAd.Tests/OidcProxy.Net.AzureAd.Tests.csproj --no-build --configuration Release
 
       - name: Pack
         run: |
