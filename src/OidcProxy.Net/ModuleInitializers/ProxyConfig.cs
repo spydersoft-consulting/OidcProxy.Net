@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using OidcProxy.Net.ModuleInitializers;
 
 // ReSharper disable once CheckNamespace
@@ -19,10 +20,14 @@ public class ProxyConfig : IAppSettingsSection
     public string? CookieName { get; set; }
     public TimeSpan? SessionIdleTimeout { get; set; }
 
+    public TimeSpan? CookieMaxAge { get; set; }
+
     public bool? CookieSecure { get; set; }
 
     public string? CookieDomain { get; set; }
-    
+
+    public SameSiteMode? CookieSameSite { get; set; }
+
     public YarpConfig? ReverseProxy { get; set; }
 
     public IList<string> SkipAuthRoutes { get; set; } = new List<string>();
@@ -60,7 +65,17 @@ public class ProxyConfig : IAppSettingsSection
         {
             options.SessionIdleTimeout = SessionIdleTimeout.Value;
         }
-        
+
+        if (CookieMaxAge.HasValue)
+        {
+            options.CookieMaxAge = CookieMaxAge.Value;
+        }
+
+        if (CookieSameSite.HasValue)
+        {
+            options.CookieSameSite = CookieSameSite.Value;
+        }
+
         if (options.Mode != Mode.AuthenticateOnly)
         {
             var routes = ReverseProxy?.Routes.ToRouteConfig() ?? [];
