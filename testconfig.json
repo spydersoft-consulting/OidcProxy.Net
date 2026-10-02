@@ -1,0 +1,18 @@
+{
+  "codeCoverage": {
+    "Configuration": {
+      "Format": "cobertura",
+      "IncludeTestAssembly": false,
+      "CodeCoverage": {
+        "SkipAutoProperties": false,
+        "Attributes": {
+          "Exclude": [
+            "^System\\.ObsoleteAttribute$",
+            "^System\\.CodeDom\\.Compiler\\.GeneratedCodeAttribute$",
+            "^System\\.Runtime\\.CompilerServices\\.CompilerGeneratedAttribute$"
+          ]
+        }
+      }
+    }
+  }
+}

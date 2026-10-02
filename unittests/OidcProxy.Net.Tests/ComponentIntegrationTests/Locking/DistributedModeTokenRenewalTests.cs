@@ -48,7 +48,7 @@ public class DistributedModeTokenRenewalTests : IAsyncLifetime
         }));
     }
     
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await _authSession.SaveAsync(new TokenResponse(Guid.NewGuid().ToString(),
             Guid.NewGuid().ToString(),
@@ -158,7 +158,7 @@ public class DistributedModeTokenRenewalTests : IAsyncLifetime
         await _identityProvider.Received(1000).RefreshTokenAsync(Arg.Any<string>(), Arg.Any<string>());
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await _redisContainer?.StopAsync()!;
     }

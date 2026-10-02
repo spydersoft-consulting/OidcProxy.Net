@@ -11,7 +11,7 @@ public class HostApplication : IAsyncLifetime, IDisposable
     private WebApplication? _testApi = null;
     private WebApplication? _echoApi = null;
     
-    public virtual async Task InitializeAsync()
+    public virtual async ValueTask InitializeAsync()
     {
         await StartOidcTestApiAsync();
         await StartEchoApiAsync();
@@ -64,7 +64,7 @@ public class HostApplication : IAsyncLifetime, IDisposable
         return _echoApi.StartAsync();
     }
 
-    public virtual async Task DisposeAsync()
+    public virtual async ValueTask DisposeAsync()
     {
         await _testApi?.StopAsync()!;
         await _echoApi?.StopAsync()!;
