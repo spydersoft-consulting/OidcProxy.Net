@@ -144,6 +144,40 @@ app.Run();
 }
 ```
 
+### Session cookie settings
+
+OidcProxy.Net keeps tokens server-side and identifies the browser with a session cookie. The following settings can
+be configured in the `OidcProxy` section of `appsettings.json` (or through `ProxyOptions` in code):
+
+| Setting | Default | Description |
+|---|---|---|
+| `CookieName` | `oidcproxy.cookie` | The name of the session cookie. |
+| `SessionIdleTimeout` | `00:20:00` | Server-side sliding timeout. The session is abandoned after this period of inactivity. |
+| `CookieMaxAge` | not set | Fixed lifetime of the cookie, counted from the moment it is issued (at login). When set, the browser persists the cookie across browser restarts. When not set, the cookie is a browser session cookie. |
+| `CookieSameSite` | not set | The `SameSite` mode of the cookie: `None`, `Lax` or `Strict`. |
+| `CookieSecure` | not set | Set to `true` to always issue the cookie with the `Secure` attribute. |
+| `CookieDomain` | not set | The domain of the cookie. |
+
+`CookieMaxAge` does **not** slide with activity: the cookie is only issued when a new session is created. The effective
+session length is the shorter of `CookieMaxAge` (counted from login) and `SessionIdleTimeout` (counted from the last
+request).
+
+Example of a persistent login:
+
+```json
+{
+  "OidcProxy": {
+    "SessionIdleTimeout": "30.00:00:00",
+    "CookieMaxAge": "30.00:00:00",
+    "CookieSameSite": "Lax"
+  }
+}
+```
+
+Persistent cookies are a security trade-off, which is why `CookieMaxAge` is not set by default. The lifetime of the
+refresh token at your identity provider must be at least as long as `SessionIdleTimeout` and `CookieMaxAge`, otherwise
+users will be signed out when their tokens can no longer be renewed.
+
 ## OidcProxy.Net <3 Docker 
 OidcProxy.Net was developed to be used in cloud environments. This is why it has mainly been designed to work well in containerised environments.
 
