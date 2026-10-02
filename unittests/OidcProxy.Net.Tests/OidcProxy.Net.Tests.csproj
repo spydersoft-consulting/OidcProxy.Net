@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
         <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="NSubstitute" />
         <PackageReference Include="Testcontainers" />
