@@ -44,9 +44,6 @@ internal class OidcProxyBootstrap<TIdentityProvider, TIdentityProviderConfig>(TI
     public void Configure(ProxyOptions options, IServiceCollection services)
     {
         services
-            .AddTransient<AnonymousAccessMiddleware>();
-        
-        services
             .AddSingleton<EndpointName>(_ => new EndpointName(options.EndpointName))
             .AddTransient<TokenRenewalMiddleware>()
             .AddTransient<IIdentityProvider, TIdentityProvider>()
@@ -72,11 +69,6 @@ internal class OidcProxyBootstrap<TIdentityProvider, TIdentityProviderConfig>(TI
 
     public void Configure(ProxyOptions options, WebApplication app)
     {
-        if (!options.AllowAnonymousAccess)
-        {
-            app.UseMiddleware<AnonymousAccessMiddleware>();
-        }
-        
         app.MapAuthenticationEndpoints(options.EndpointName);
     }
 }
