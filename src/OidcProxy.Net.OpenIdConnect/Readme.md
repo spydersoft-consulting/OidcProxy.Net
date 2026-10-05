@@ -101,6 +101,10 @@ To see the logged in user, navigate to the `/oauth2/userinfo` endpoint. This end
 ### [GET] /oauth2/sign_out
 To revoke the tokens that have been obtained when the user logged in, execute a get request on the `/oauth2/sign_out` endpoint. This will revoke the tokens that have been stored in the user session and will not log the user out from the Identity Provider session. This must be implemented at client side.
 
+## Upgrading from OidcProxy.Net 5.4.1
+
+Moving from the original `OidcProxy.Net` packages? The package IDs and the default endpoints (`/.auth/login` is now `/oauth2/sign_in`) changed. See the [upgrade guide](https://github.com/spydersoft-consulting/OidcProxy.Net/blob/main/docs/UPGRADING.md), which is also included in this package under `docs/UPGRADING.md`.
+
 ## Issues
 
 Are you encountering issues? Please let us know at: https://github.com/thecloudnativewebapp/OidcProxy.Net/issues

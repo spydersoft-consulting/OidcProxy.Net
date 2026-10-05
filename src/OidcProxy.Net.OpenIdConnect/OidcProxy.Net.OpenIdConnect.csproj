@@ -43,6 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Include="..\..\docs\UPGRADING.md" Pack="true" PackagePath="docs\" />
         <Content Include="..\..\logo.png" pack="true" PackagePath=".">
             <Link>logo.png</Link>
         </Content>
