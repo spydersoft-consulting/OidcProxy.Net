@@ -31,6 +31,8 @@ public class ProxyOptions
     private readonly YarpBootstrap _yarpBootstrap = new();
 
     private readonly AuthorizationBootstrap _authorizationBootstrap = new();
+
+    private readonly AllowAnonymousBootstrap _allowAnonymousBootstrap = new();
     
     internal IEnumerable<IBootstrap> GetConfiguration()
     {
@@ -51,6 +53,7 @@ public class ProxyOptions
         {
             _sessionBootstrap,
             _authorizationBootstrap,
+            _allowAnonymousBootstrap,
             _oidcProxyBootstrap,
         };
 
