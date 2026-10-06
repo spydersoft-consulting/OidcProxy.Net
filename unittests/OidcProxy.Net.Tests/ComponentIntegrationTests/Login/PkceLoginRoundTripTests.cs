@@ -122,15 +122,15 @@ public class PkceLoginRoundTripTests
         return app;
     }
 
-    private class TestConfig;
+    internal class TestConfig;
 
-    private class AcceptAnySignature : IJwtSignatureValidator
+    internal class AcceptAnySignature : IJwtSignatureValidator
     {
         public Task<bool> Validate(string? token) => Task.FromResult(true);
     }
 
     /// <summary>A browser with a cookie jar that follows redirects by hand, so every hop can be asserted.</summary>
-    private sealed class Browser : IDisposable
+    internal sealed class Browser : IDisposable
     {
         private const string CookieName = "oidcproxy.cookie";
         private readonly CookieContainer _cookies = new();
@@ -198,13 +198,15 @@ public class PkceLoginRoundTripTests
     }
 
     /// <summary>An identity provider that, like a real one, redeems a code only for the verifier matching its challenge.</summary>
-    private class PkceIdentityProvider : IIdentityProvider
+    internal class PkceIdentityProvider : IIdentityProvider
     {
         private string? _challenge;
 
         public string? ReceivedCodeVerifier { get; private set; }
 
         public bool TokenRequestAccepted { get; private set; }
+
+        public string? IssuedAccessToken { get; private set; }
 
         public static string CreateChallenge(string verifier) =>
             WebEncoders.Base64UrlEncode(SHA256.HashData(Encoding.ASCII.GetBytes(verifier)));
@@ -231,6 +233,7 @@ public class PkceLoginRoundTripTests
             }
 
             var jwt = $"{Encode("{\"alg\":\"none\"}")}.{Encode(JsonSerializer.Serialize(new { sub = "user" }))}.";
+            IssuedAccessToken = jwt;
             return Task.FromResult(new TokenResponse(jwt, jwt, "refresh", DateTime.UtcNow.AddHours(1)));
         }
 
