@@ -6,18 +6,19 @@ internal class InMemoryConcurrentContext : IConcurrentContext
 {   
     public async Task ExecuteOncePerSession(ISession session, string identifier, Func<bool> actionRequired, Func<Task> @delegate)
     {
+        if (!actionRequired())
+        {
+            return;
+        }
+
         var cacheKey = $"{typeof(InMemoryConcurrentContext).FullName}+{session.Id}+{identifier}";
 
         var semaphore = Semaphores.GetInstance(cacheKey);
+        var acquired = false;
 
         try
         {
-            if (!actionRequired())
-            { 
-                return;
-            }
-            
-            var acquired = await semaphore.WaitAsync(TimeSpan.FromSeconds(15));
+            acquired = await semaphore.WaitAsync(TimeSpan.FromSeconds(15));
             if (acquired && actionRequired())
             {
                 await @delegate();
@@ -25,8 +26,12 @@ internal class InMemoryConcurrentContext : IConcurrentContext
         }
         finally
         {
-            semaphore.Release();
-            Semaphores.RemoveInstance(cacheKey);
+            if (acquired)
+            {
+                semaphore.Release();
+            }
+
+            Semaphores.ReleaseInstance(cacheKey);
         }
     }
 }
